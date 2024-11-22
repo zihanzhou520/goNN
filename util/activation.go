@@ -4,6 +4,16 @@ import (
 	"math"
 )
 
+var ActivationFunctions = map[string]func(float64) float64{
+	"relu":    ReLU,
+	"sigmoid": Sigmoid,
+}
+
+var ActivationDerivatives = map[string]func(float64) float64{
+	"relu":    ReLUDerivative,
+	"sigmoid": SigmoidDerivative,
+}
+
 // ReLU is an activation function that returns a value passed in if it is positive and returns 0 otherwise
 func ReLU(x float64) float64 {
 	if x > 0 {
@@ -66,6 +76,11 @@ func SoftmaxDerivative(inputs []float64) [][]float64 {
 }
 
 // ApplyActivation is a function to apply an activation function to a given matrix
-func ApplyActivation(m Matrix, activationFunc func(float64) float64) Matrix {
-	return Apply(m, activationFunc)
+func ApplyActivation(m Matrix, activation string) Matrix {
+	return Apply(m, ActivationFunctions[activation])
+}
+
+// ApplyActivation is a function to apply an activation derivative to a given matrix
+func ApplyGrad(m Matrix, activation string) Matrix {
+	return Apply(m, ActivationDerivatives[activation])
 }

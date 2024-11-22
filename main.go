@@ -5,7 +5,6 @@ import (
 	"log"
 	"yashwanthrs.com/m/datasets"
 	"yashwanthrs.com/m/nn"
-	"yashwanthrs.com/m/util"
 )
 
 func main() {
@@ -16,22 +15,22 @@ func main() {
 	testLabelPath := mainPath + "t10k-labels.idx1-ubyte"
 
 	fmt.Println("Loading MNIST training data...")
-	trainData, err := datasets.LoadMNIST(imagePath, labelPath, 6000)
+	trainData, err := datasets.LoadMNIST(imagePath, labelPath, 600)
 	if err != nil {
 		log.Fatalf("Failed to load MNIST training data: %v", err)
 	}
 
 	fmt.Println("Loading MNIST test data...")
-	testData, err := datasets.LoadMNIST(testImagePath, testLabelPath, 1000)
+	testData, err := datasets.LoadMNIST(testImagePath, testLabelPath, 100)
 	if err != nil {
 		log.Fatalf("Failed to load MNIST test data: %v", err)
 	}
 
 	fmt.Println("Building the model...")
 	model := nn.NewModel(
-		nn.NewDenseLayer(784, 128, util.ReLU, util.ReLUDerivative),
-		nn.NewDenseLayer(128, 64, util.ReLU, util.ReLUDerivative),
-		nn.NewDenseLayer(64, 10, util.Sigmoid, util.SigmoidDerivative),
+		nn.NewDenseLayer(784, 128, "relu"),
+		nn.NewDenseLayer(128, 64, "relu"),
+		nn.NewDenseLayer(64, 10, "sigmoid"),
 	)
 
 	fmt.Println("Training the model...")
@@ -49,6 +48,10 @@ func main() {
 	fmt.Println("Evaluating the model...")
 	accuracy := evaluate(model, testData.Images, testData.Labels)
 	fmt.Printf("Test Accuracy: %.2f%%\n", accuracy*100)
+	err = model.SaveModel("./models/model")
+	if err != nil {
+		fmt.Println("Error saving the model: ", err)
+	}
 }
 
 func evaluate(model *nn.Model, images [][]float64, labels [][]float64) float64 {

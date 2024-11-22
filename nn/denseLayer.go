@@ -6,26 +6,25 @@ import (
 )
 
 type DenseLayer struct {
-	Weights        util.Matrix
-	Biases         util.Matrix
-	Input          util.Matrix
-	Output         util.Matrix
-	WeightGrad     util.Matrix
-	BiasGrad       util.Matrix
-	Activation     func(float64) float64
-	ActivationGrad func(float64) float64
+	Weights    util.Matrix
+	Biases     util.Matrix
+	Input      util.Matrix
+	Output     util.Matrix
+	WeightGrad util.Matrix
+	BiasGrad   util.Matrix
+	Activation string
 }
 
 // NewDenseLayer is a function to create a new dense layer
-func NewDenseLayer(inputSize, outputSize int, activation func(float64) float64, activationGrad func(float64) float64) *DenseLayer {
+// func(float64) float64, activationGrad func(float64) float64
+func NewDenseLayer(inputSize, outputSize int, activation string) *DenseLayer {
 	weights := util.RandomMatrix(inputSize, outputSize, -0.1, 0.1)
 	biases := util.NewMatrix(1, outputSize)
 
 	return &DenseLayer{
-		Weights:        weights,
-		Biases:         biases,
-		Activation:     activation,
-		ActivationGrad: activationGrad,
+		Weights:    weights,
+		Biases:     biases,
+		Activation: activation,
 	}
 }
 
@@ -45,13 +44,13 @@ func (layer *DenseLayer) Forward(input util.Matrix) (util.Matrix, error) {
 		return nil, err
 	}
 
-	layer.Output = util.Apply(z, layer.Activation)
+	layer.Output = util.ApplyActivation(z, layer.Activation)
 	return layer.Output, nil
 }
 
 // Backward is a function to apply backward propagation to this layer
 func (layer *DenseLayer) Backward(dOutput util.Matrix) (util.Matrix, error) {
-	dZ := util.ApplyActivation(layer.Output, layer.ActivationGrad)
+	dZ := util.ApplyGrad(layer.Output, layer.Activation)
 	dZ, err := util.Hadamard(dOutput, dZ)
 	if err != nil {
 		fmt.Println("Error in Hadamard: ", err)
