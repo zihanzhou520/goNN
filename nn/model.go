@@ -1,6 +1,7 @@
 package nn
 
 import (
+	"fmt"
 	"yashwanthrs.com/m/util"
 )
 
@@ -25,9 +26,13 @@ func (m *Model) Forward(input util.Matrix) (util.Matrix, error) {
 func (m *Model) Backward(dOutput util.Matrix) error {
 	gradient := dOutput
 	for i := len(m.Layers) - 1; i >= 0; i-- {
-		gradient = m.Layers[i].Backward(gradient)
+		var err error
+		gradient, err = m.Layers[i].Backward(gradient)
+		if err != nil {
+			fmt.Println("Error in backwards propagaton: ", err)
+			return err
+		}
 	}
-
 	return nil
 }
 
