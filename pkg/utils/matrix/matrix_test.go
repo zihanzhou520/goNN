@@ -98,16 +98,13 @@ func TestMultiplyFuzz(t *testing.T) {
 			return true
 		}
 
-		// Ensure minVal is less than or equal to maxVal
 		if minVal > maxVal {
 			minVal, maxVal = maxVal, minVal
 		}
 
-		// Generate random matrices
 		matrixA := NewRandomMatrix(rowsA, colsA, minVal, maxVal)
 		matrixB := NewRandomMatrix(colsA, colsB, minVal, maxVal)
 
-		// Perform matrix multiplication with both algorithms
 		correctResult, err1 := sequentialMultiply(*matrixA, *matrixB)
 		if err1 != nil {
 			t.Errorf("Sequential multiply error: %v", err1)
@@ -120,7 +117,6 @@ func TestMultiplyFuzz(t *testing.T) {
 			return false
 		}
 
-		// Compare the results
 		if !MatrixEquals(correctResult, concurrentResult) {
 			t.Errorf("Results do not match: sequential=%v, concurrent=%v", correctResult, concurrentResult)
 			return false
@@ -129,6 +125,7 @@ func TestMultiplyFuzz(t *testing.T) {
 		return true
 	}
 
+	// Run with -v for iteration status
 	it := 100
 	for i := 0; i < it; i++ {
 		fmt.Printf("\rIteration: %d/%d", i+1, it)
