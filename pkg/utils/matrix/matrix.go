@@ -13,7 +13,7 @@ type Matrix [][]float64
 ///////////////////////////////
 
 // A simple constructor which will create a matrix of zeros
-func NewMatrix(rows, cols int) *Matrix {
+func NewZeroMatrix(rows, cols int) *Matrix {
 	matrix := make(Matrix, rows)
 	for i := 0; i < rows; i++ {
 		matrix[i] = make([]float64, cols)
@@ -22,7 +22,7 @@ func NewMatrix(rows, cols int) *Matrix {
 }
 
 // A simple constructor which will create a matrix of given initial values
-func InitializeMatrix(rows, cols int, val float64) *Matrix {
+func NewInitMatrix(rows, cols int, val float64) *Matrix {
 	matrix := make(Matrix, rows)
 	for i := 0; i < rows; i++ {
 		matrix[i] = make([]float64, cols)
@@ -34,8 +34,8 @@ func InitializeMatrix(rows, cols int, val float64) *Matrix {
 }
 
 // A simple constructor which will create a matrix of random numbers
-func RandomMatrix(rows, cols int, minVal, maxVal float64) *Matrix {
-	matrix := *NewMatrix(rows, cols)
+func NewRandomMatrix(rows, cols int, minVal, maxVal float64) *Matrix {
+	matrix := *NewZeroMatrix(rows, cols)
 	for i := range matrix {
 		for j := range matrix[i] {
 			matrix[i][j] = minVal + rand.Float64()*(maxVal-minVal)
