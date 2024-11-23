@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/RSYashwanth/goNN/utils"
+	matrix "demo/pkg/utils/matrix"
 )
 
 func main() {
-	m, _ := utils.NewMatrix([]float64{1, 2, 3, 4}, []int{2, 2})
-	m.Print()
+	m := matrix.NewInitMatrix(3, 3, 1)
+	println(m)
 }
