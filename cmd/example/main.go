@@ -1,7 +1,7 @@
 package main
 
 import (
-	"pkg/utils"
+	"github.com/RSYashwanth/goNN/utils"
 )
 
 func main() {
