@@ -84,7 +84,7 @@ func Subtract(m1Ptr, m2Ptr *Matrix) (*Matrix, error) {
 	b2 := len(m2[0])
 
 	if a1 != b1 || a2 != b2 {
-		return nil, fmt.Errorf("cannot add matrices of different shapes")
+		return nil, fmt.Errorf("cannot subtract matrices of different shapes")
 	}
 
 	newData := make(Matrix, a1)
@@ -93,6 +93,31 @@ func Subtract(m1Ptr, m2Ptr *Matrix) (*Matrix, error) {
 		newData[i] = make([]float64, a2)
 		for j := 0; j < a2; j++ {
 			newData[i][j] = m1[i][j] + m2[i][j]
+		}
+	}
+	return &newData, nil
+}
+
+// Hadamard product of two matrices
+func Hadamard(m1Ptr, m2Ptr *Matrix) (*Matrix, error) {
+	m1 := *m1Ptr
+	m2 := *m2Ptr
+
+	a1 := len(m1)
+	a2 := len(m1[0])
+	b1 := len(m2)
+	b2 := len(m2[0])
+
+	if a1 != b1 || a2 != b2 {
+		return nil, fmt.Errorf("cannot calculate hadamard product of matrices of different shapes")
+	}
+
+	newData := make(Matrix, a1)
+
+	for i := 0; i < a1; i++ {
+		newData[i] = make([]float64, a2)
+		for j := 0; j < a2; j++ {
+			newData[i][j] = m1[i][j] * m2[i][j]
 		}
 	}
 	return &newData, nil
@@ -119,22 +144,44 @@ func MatrixMultiply(m1Ptr, m2Ptr *Matrix) (*Matrix, error) {
 	a1 := len(m1)
 	a2 := len(m1[0])
 	b1 := len(m2)
-	b2 := len(m2[0])
 
 	if a2 != b1 {
 		return nil, fmt.Errorf("cannot multiply matrices of incompatible shapes")
 	}
 
 	newData := make(Matrix, a1)
+	c := make(chan tmpRowRes, a1)
+
 	for i := 0; i < a1; i++ {
-		newData[i] = make([]float64, b2)
-		for j := 0; j < b2; j++ {
-			for k := 0; k < a2; k++ {
-				newData[i][j] += m1[i][k] * m2[k][j]
-			}
+		go calcRow(c, m1[i], m2, i)
+	}
+
+	for x := 0; x < a1; x++ {
+		rowResult := <-c
+		newData[rowResult.idx] = rowResult.result
+	}
+
+	return &newData, nil
+}
+
+// The calcRow helps multiply matrices concurrently
+func calcRow(c chan tmpRowRes, rowA []float64, matrixB Matrix, position int) {
+	colsB := len(matrixB[0])
+	resultRow := make([]float64, colsB)
+
+	for j := 0; j < colsB; j++ {
+		for k := 0; k < len(rowA); k++ {
+			resultRow[j] += rowA[k] * matrixB[k][j]
 		}
 	}
-	return &newData, nil
+
+	c <- tmpRowRes{result: resultRow, idx: position}
+}
+
+// The tmpRowRes struct stores rows during concurrent multiplication
+type tmpRowRes struct {
+	result []float64
+	idx    int
 }
 
 // Transpose returns the transpose of the matrix
