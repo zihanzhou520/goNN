@@ -8,6 +8,11 @@ import (
 )
 
 func main() {
+	test()
+	// m()
+}
+
+func m() {
 	mainPath := "../../data/"
 	imagePath := mainPath + "train-images.idx3-ubyte"
 	labelPath := mainPath + "train-labels.idx1-ubyte"
@@ -15,13 +20,13 @@ func main() {
 	testLabelPath := mainPath + "t10k-labels.idx1-ubyte"
 
 	fmt.Println("Loading MNIST training data...")
-	trainData, err := datasets.LoadMNIST(imagePath, labelPath, 600)
+	trainData, err := datasets.LoadMNIST(imagePath, labelPath, 6000)
 	if err != nil {
 		log.Fatalf("Failed to load MNIST training data: %v", err)
 	}
 
 	fmt.Println("Loading MNIST test data...")
-	testData, err := datasets.LoadMNIST(testImagePath, testLabelPath, 100)
+	testData, err := datasets.LoadMNIST(testImagePath, testLabelPath, 1000)
 	if err != nil {
 		log.Fatalf("Failed to load MNIST test data: %v", err)
 	}

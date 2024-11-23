@@ -3,8 +3,10 @@ package nn
 import (
 	"errors"
 	"fmt"
-	"github.com/cheggaaa/pb/v3"
+	"math"
 	"math/rand"
+
+	"github.com/cheggaaa/pb/v3"
 	"yashwanthrs.com/m/util"
 )
 
@@ -19,7 +21,7 @@ func Train(model *Model, xTrain, yTrain util.Matrix, epochs int, learningRate fl
 
 		xTrain, yTrain = Shuffle(xTrain, yTrain)
 
-		progressBar := pb.StartNew(numSamples / batchSize)
+		progressBar := pb.StartNew(int(math.Ceil(float64(numSamples) / float64(batchSize))))
 
 		for i := 0; i < numSamples; i += batchSize {
 			end := i + batchSize

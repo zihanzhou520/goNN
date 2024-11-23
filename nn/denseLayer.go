@@ -6,6 +6,7 @@ import (
 )
 
 type DenseLayer struct {
+	Type       string
 	Weights    util.Matrix
 	Biases     util.Matrix
 	Input      util.Matrix
@@ -16,12 +17,12 @@ type DenseLayer struct {
 }
 
 // NewDenseLayer is a function to create a new dense layer
-// func(float64) float64, activationGrad func(float64) float64
 func NewDenseLayer(inputSize, outputSize int, activation string) *DenseLayer {
 	weights := util.RandomMatrix(inputSize, outputSize, -0.1, 0.1)
 	biases := util.NewMatrix(1, outputSize)
 
 	return &DenseLayer{
+		Type:       "dense",
 		Weights:    weights,
 		Biases:     biases,
 		Activation: activation,
