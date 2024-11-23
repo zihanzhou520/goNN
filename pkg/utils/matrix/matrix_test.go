@@ -60,3 +60,17 @@ func TestAdd(t *testing.T) {
 		}
 	}
 }
+
+func TestMultiply(t *testing.T) {
+	m1 := *NewInitMatrix(3, 2, 1)
+	m2 := *NewInitMatrix(2, 3, 10)
+
+	m3Ptr, e := MatrixMultiply(&m1, &m2)
+	if e != nil {
+		t.Error(e)
+	}
+	expectedMatrixPtr := NewInitMatrix(3, 3, 20)
+	if !MatrixEquals(m3Ptr, expectedMatrixPtr) {
+		t.Errorf("Expected %v, got %v", *expectedMatrixPtr, *m3Ptr)
+	}
+}
