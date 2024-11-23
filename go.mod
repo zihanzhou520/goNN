@@ -1,3 +1,3 @@
-module github.com/RSYashwanth/nn_network
+module github.com/RSYashwanth/goNN
 
 go 1.23.1

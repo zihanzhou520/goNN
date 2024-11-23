@@ -1,80 +1,220 @@
 package utils
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
 // Can optimize later?
 type Matrix [][]float64
 
-// NewMatrix creates a new matrix from a slice of data and a shape.
-func NewMatrix(data []float64, shape []int) (*Matrix, error) {
-	if len(shape) != 2 {
-		return nil, fmt.Errorf("expected a 2D shape (rows x columns), got %v", shape)
+///////////////////////////////
+// Matrix Constructors
+///////////////////////////////
+
+// A simple constructor which will create a matrix of zeros
+func NewMatrix(rows, cols int) *Matrix {
+	matrix := make(Matrix, rows)
+	for i := 0; i < rows; i++ {
+		matrix[i] = make([]float64, cols)
 	}
-	expectedSize := shape[0] * shape[1]
-	if expectedSize != len(data) {
-		return nil, fmt.Errorf(
-			"data size (%d) did not match shape size (%d)",
-			len(data),
-			expectedSize,
-		)
-	}
-	return &Matrix{Data: data, Shape: shape}, nil
+	return &matrix
 }
 
-// ScalarMultiply multiplies the matrix by a scalar.
-func (m *Matrix) ScalarMultiply(scalar float64) *Matrix {
-	newData := make([]float64, len(m.Data))
-	for i := range m.Data {
-		newData[i] = m.Data[i] * scalar
+// A simple constructor which will create a matrix of given initial values
+func InitializeMatrix(rows, cols int, val float64) *Matrix {
+	matrix := make(Matrix, rows)
+	for i := 0; i < rows; i++ {
+		matrix[i] = make([]float64, cols)
+		for j := 0; j < cols; j++ {
+			matrix[i][j] = float64(val)
+		}
 	}
-	return &Matrix{Data: newData, Shape: m.Shape}
+	return &matrix
 }
+
+// A simple constructor which will create a matrix of random numbers
+func RandomMatrix(rows, cols int, minVal, maxVal float64) *Matrix {
+	matrix := *NewMatrix(rows, cols)
+	for i := range matrix {
+		for j := range matrix[i] {
+			matrix[i][j] = minVal + rand.Float64()*(maxVal-minVal)
+		}
+	}
+	return &matrix
+}
+
+///////////////////////////////
+// Matrix Operations
+///////////////////////////////
 
 // Add adds two matrices together element-wise.
-func (m *Matrix) Add(m2 *Matrix) (*Matrix, error) {
-	if m.Shape[0] != m2.Shape[0] || m.Shape[1] != m2.Shape[1] {
+func Add(m1Ptr, m2Ptr *Matrix) (*Matrix, error) {
+	m1 := *m1Ptr
+	m2 := *m2Ptr
+
+	a1 := len(m1)
+	a2 := len(m1[0])
+	b1 := len(m2)
+	b2 := len(m2[0])
+
+	if a1 != b1 || a2 != b2 {
 		return nil, fmt.Errorf("cannot add matrices of different shapes")
 	}
 
-	newData := make([]float64, len(m.Data))
-	for i := range m.Data {
-		newData[i] = m.Data[i] + m2.Data[i]
-	}
+	newData := make(Matrix, a1)
 
-	return &Matrix{Data: newData, Shape: m.Shape}, nil
+	for i := 0; i < a1; i++ {
+		newData[i] = make([]float64, a2)
+		for j := 0; j < a2; j++ {
+			newData[i][j] = m1[i][j] + m2[i][j]
+		}
+	}
+	return &newData, nil
 }
 
-// Add adds two matrices together element-wise.
-func (m *Matrix) Subtract(m2 *Matrix) (*Matrix, error) {
-	if m.Shape[0] != m2.Shape[0] || m.Shape[1] != m2.Shape[1] {
+// Subtracts two matrices element-wise
+func Subtract(m1Ptr, m2Ptr *Matrix) (*Matrix, error) {
+	m1 := *m1Ptr
+	m2 := *m2Ptr
+
+	a1 := len(m1)
+	a2 := len(m1[0])
+	b1 := len(m2)
+	b2 := len(m2[0])
+
+	if a1 != b1 || a2 != b2 {
 		return nil, fmt.Errorf("cannot add matrices of different shapes")
 	}
 
-	newData := make([]float64, len(m.Data))
-	for i := range m.Data {
-		newData[i] = m.Data[i] - m2.Data[i]
-	}
+	newData := make(Matrix, a1)
 
-	return &Matrix{Data: newData, Shape: m.Shape}, nil
+	for i := 0; i < a1; i++ {
+		newData[i] = make([]float64, a2)
+		for j := 0; j < a2; j++ {
+			newData[i][j] = m1[i][j] + m2[i][j]
+		}
+	}
+	return &newData, nil
 }
 
-// Multiply multiplies two matrices together element-wise.
-func (m *Matrix) Multiply(m2 *Matrix) (*Matrix, error) {
-	if m.Shape[1] != m2.Shape[0] {
+// ScalarMultiply multiplies a matrix by a scalar
+func ScalarMultiply(mPtr *Matrix, scalar float64) *Matrix {
+	m := *mPtr
+	newData := make(Matrix, len(m))
+	for i := range m {
+		newData[i] = make([]float64, len(m[i]))
+		for j := range m[i] {
+			newData[i][j] = m[i][j] * scalar
+		}
+	}
+	return &newData
+}
+
+// MatrixMultiply multiplies two matrices
+func MatrixMultiply(m1Ptr, m2Ptr *Matrix) (*Matrix, error) {
+	m1 := *m1Ptr
+	m2 := *m2Ptr
+
+	a1 := len(m1)
+	a2 := len(m1[0])
+	b1 := len(m2)
+	b2 := len(m2[0])
+
+	if a2 != b1 {
 		return nil, fmt.Errorf("cannot multiply matrices of incompatible shapes")
 	}
-	newData := make([]float64, m.Shape[0]*m2.Shape[1])
 
-	// Multiply using divide and conquer
-	return &Matrix{Data: newData, Shape: []int{m.Shape[0], m2.Shape[1]}}, nil
+	newData := make(Matrix, a1)
+	for i := 0; i < a1; i++ {
+		newData[i] = make([]float64, b2)
+		for j := 0; j < b2; j++ {
+			for k := 0; k < a2; k++ {
+				newData[i][j] += m1[i][k] * m2[k][j]
+			}
+		}
+	}
+	return &newData, nil
 }
 
-// Print prints the matrix in row-major order.
-func (m *Matrix) Print() {
-	for i := 0; i < m.Shape[0]; i++ {
-		for j := 0; j < m.Shape[1]; j++ {
-			fmt.Printf("%f ", m.Data[i*m.Shape[1]+j])
+// Transpose returns the transpose of the matrix
+func Transpose(mPtr *Matrix) *Matrix {
+	m := *mPtr
+	newData := make(Matrix, len(m[0]))
+	for i := range m[0] {
+		newData[i] = make([]float64, len(m))
+		for j := range m {
+			newData[i][j] = m[j][i]
 		}
-		fmt.Println()
 	}
+	return &newData
+}
+
+// MatrixEquals returns true if the two matrices are equal
+func MatrixEquals(m1Ptr, m2Ptr *Matrix) bool {
+	m1 := *m1Ptr
+	m2 := *m2Ptr
+	if len(m1) != len(m2) {
+		return false
+	}
+	for i := range m1 {
+		if len(m1[i]) != len(m2[i]) {
+			return false
+		}
+		for j := range m1[i] {
+			if m1[i][j] != m2[i][j] {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+///////////////////////////////
+// Matrix Functions
+///////////////////////////////
+
+// Instances method to Add
+func (m1Ptr *Matrix) Add(m2Ptr *Matrix) error {
+	m1 := *m1Ptr
+	m2 := *m2Ptr
+
+	a1 := len(m1)
+	a2 := len(m1[0])
+	b1 := len(m2)
+	b2 := len(m2[0])
+
+	if a1 != b1 || a2 != b2 {
+		return fmt.Errorf("cannot add matrices of different shapes")
+	}
+
+	for i := range m1 {
+		for j := range m1[i] {
+			m1[i][j] += m2[i][j]
+		}
+	}
+	return nil
+}
+
+// Instances method to ScalarMultiply
+func (mPtr *Matrix) ScalarMultiply(scalar float64) {
+	m := *mPtr
+	for i := range m {
+		for j := range m[i] {
+			m[i][j] *= scalar
+		}
+	}
+}
+
+// Instances method to Transpose
+func (mPtr *Matrix) Transpose() *Matrix {
+	m := *mPtr
+	newData := make(Matrix, len(m[0]))
+	for i := range m[0] {
+		newData[i] = make([]float64, len(m))
+		for j := range m {
+			newData[i][j] = m[j][i]
+		}
+	}
+	return &newData
 }
