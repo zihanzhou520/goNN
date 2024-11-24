@@ -42,30 +42,31 @@ func main() {
 	// Create the model
 	model := models.NewSequential(
 		layers.NewDenseLayer(2, 3),
-		layers.NewReluLayer(),
+		layers.NewTanhLayer(),
 		layers.NewDenseLayer(3, 1),
-		layers.NewReluLayer(),
+		layers.NewTanhLayer(),
 	)
 
-	optim := o.NewSGD(0.1)
+	optim := o.NewSGD(0.03)
 	loss := loss.NewMSELoss()
 
 	// Train the model
 	fmt.Println("\nTraining...")
-	err := model.Train(dataLoader, optim, loss, 10)
+	err := model.Train(dataLoader, optim, loss, 1000)
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Model.Train: Error during training%v\n", err)
 		return
 	}
-	output, err := model.Forward(m.NewGivenMatrix([][]float64{{0}, {1}}))
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Model.Forward: Error during forward")
-		return
-	}
 
-	fmt.Println("\nInput:")
-	fmt.Println(m.NewGivenMatrix([][]float64{{1}, {1}}))
-	fmt.Println("\nOutput:")
-	fmt.Println(output)
+	// Print out predictions for each
+	fmt.Println("\nPredictions:")
+	for _, data := range data {
+		prediction, err := model.Forward(data.Input)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Model.Forward: Error during forward%v\n", err)
+			return
+		}
+		fmt.Println(data.Input, " | ", prediction)
+	}
 }
