@@ -14,7 +14,7 @@ type DenseLayer struct {
 // Generates a new dense layer
 func NewDenseLayer(inputNeurons, outputNeurons int) *DenseLayer {
 	weights := m.NewRandomMatrix(outputNeurons, inputNeurons, -1, 1)
-	bias := m.NewRandomMatrix(outputNeurons, 1, -10, 10)
+	bias := m.NewRandomMatrix(outputNeurons, 1, -1, 1)
 	return &DenseLayer{
 		Weights: weights,
 		Bias:    bias,

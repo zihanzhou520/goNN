@@ -21,5 +21,11 @@ func (l *MSELoss) Calculate(output, target *m.Matrix) (float64, error) {
 }
 
 func (l *MSELoss) Gradient(output, target *m.Matrix) (*m.Matrix, error) {
-	return m.Subtract(output, target)
+	// Gradient
+	diff, err := m.Subtract(output, target)
+	if err != nil {
+		return nil, err
+	}
+	diff = m.ScalarMultiply(diff, 2.0/float64(len(*output)))
+	return diff, nil
 }

@@ -105,7 +105,7 @@ func Subtract(m1Ptr, m2Ptr *Matrix) (*Matrix, error) {
 	for i := 0; i < a1; i++ {
 		newData[i] = make([]float64, a2)
 		for j := 0; j < a2; j++ {
-			newData[i][j] = m1[i][j] + m2[i][j]
+			newData[i][j] = m1[i][j] - m2[i][j]
 		}
 	}
 	return &newData, nil

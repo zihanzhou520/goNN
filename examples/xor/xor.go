@@ -52,7 +52,7 @@ func main() {
 
 	// Train the model
 	fmt.Println("\nTraining...")
-	err := model.Train(dataLoader, optim, loss, 1000)
+	err := model.Train(dataLoader, optim, loss, 10000)
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Model.Train: Error during training%v\n", err)
