@@ -1,13 +1,13 @@
 package main
 
 import (
-	d "demo/pkg/dataloader"
-	layers "demo/pkg/layers"
-	loss "demo/pkg/loss"
-	models "demo/pkg/models"
-	o "demo/pkg/optimizers"
-	m "demo/pkg/utils/matrix"
 	"fmt"
+	d "github.com/RSYashwanth/goNN/pkg/dataloader"
+	layers "github.com/RSYashwanth/goNN/pkg/layers"
+	loss "github.com/RSYashwanth/goNN/pkg/loss"
+	models "github.com/RSYashwanth/goNN/pkg/models"
+	o "github.com/RSYashwanth/goNN/pkg/optimizers"
+	m "github.com/RSYashwanth/goNN/pkg/utils/matrix"
 	"os"
 )
 
@@ -37,7 +37,7 @@ func main() {
 		{Input: m.NewGivenMatrix([][]float64{{1}, {0}}), Target: m.NewGivenMatrix([][]float64{{1}})},
 		{Input: m.NewGivenMatrix([][]float64{{1}, {1}}), Target: m.NewGivenMatrix([][]float64{{0}})},
 	}
-	dataLoader := d.NewDataLoader(data, 1)
+	dataLoader := d.NewDataLoader(data, 4)
 
 	// Create the model
 	model := models.NewSequential(

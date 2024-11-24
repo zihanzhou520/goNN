@@ -1,12 +1,12 @@
 package models
 
 import (
-	d "demo/pkg/dataloader"
-	l "demo/pkg/layers"
-	e "demo/pkg/loss"
-	o "demo/pkg/optimizers"
-	m "demo/pkg/utils/matrix"
 	"fmt"
+	d "github.com/RSYashwanth/goNN/pkg/dataloader"
+	l "github.com/RSYashwanth/goNN/pkg/layers"
+	e "github.com/RSYashwanth/goNN/pkg/loss"
+	o "github.com/RSYashwanth/goNN/pkg/optimizers"
+	m "github.com/RSYashwanth/goNN/pkg/utils/matrix"
 	"os"
 )
 

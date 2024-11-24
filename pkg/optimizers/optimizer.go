@@ -1,6 +1,6 @@
 package optimizers
 
-import m "demo/pkg/utils/matrix"
+import m "github.com/RSYashwanth/goNN/pkg/utils/matrix"
 
 // Out optimizer performs an inplace updation
 // of the passed in parameters based on the calculated gradient and

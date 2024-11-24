@@ -1,7 +1,7 @@
 package loss
 
 import (
-	m "demo/pkg/utils/matrix"
+	m "github.com/RSYashwanth/goNN/pkg/utils/matrix"
 )
 
 // Mean Squared Error Loss
