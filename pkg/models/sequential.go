@@ -1,6 +1,7 @@
 package models
 
 import (
+	d "demo/pkg/dataloader"
 	l "demo/pkg/layers"
 	e "demo/pkg/loss"
 	o "demo/pkg/optimizers"
@@ -34,33 +35,39 @@ func (s *Sequential) Forward(input *m.Matrix) (*m.Matrix, error) {
 	return currentInput, nil
 }
 
-func (s *Sequential) Train(input *m.Matrix, output *m.Matrix,
+func (s *Sequential) Train(dataloader *d.DataLoader,
 	optimizer *o.Optimizer, loss *e.Loss, epochs int) error {
-	currentInput := input
 	var err error
 
 	for i := 0; i < epochs; i++ {
-		// Keep forwarding the input
-		for _, layer := range s.Layers {
-			currentInput, err = layer.Forward(currentInput)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Model.Train: Error during forward")
-				return err
-			}
-		}
+		currentBatch := dataloader.GetBatch()
+		for _, data := range currentBatch {
+			currentInput := data.Input
+			currentTarget := data.Target
 
-		// Now we will backpropagate
-		currentGrad, err := (*loss).Gradient(currentInput, output)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Model.Train: Error during loss gradient calculation")
-			return err
-		}
-		for i := len(s.Layers) - 1; i >= 0; i-- {
-			currentGrad, err = s.Layers[i].Backward(currentGrad, optimizer)
+			// Keep forwarding the input
+			for _, layer := range s.Layers {
+				currentInput, err = layer.Forward(currentInput)
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "Model.Train: Error during forward")
+					return err
+				}
+			}
+
+			// Now we will backpropagate
+			currentGrad, err := (*loss).Gradient(currentInput, currentTarget)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Model.Train: Error during backpropogation")
+				fmt.Fprintf(os.Stderr, "Model.Train: Error during loss gradient calculation")
 				return err
 			}
+			for i := len(s.Layers) - 1; i >= 0; i-- {
+				currentGrad, err = s.Layers[i].Backward(currentGrad, optimizer)
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "Model.Train: Error during backpropogation")
+					return err
+				}
+			}
+
 		}
 
 	}
