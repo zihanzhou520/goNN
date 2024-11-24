@@ -1,8 +1,8 @@
 package layers
 
 import (
-	o "demo/pkg/optimizers"
-	m "demo/pkg/utils/matrix"
+	o "github.com/RSYashwanth/goNN/pkg/optimizers"
+	m "github.com/RSYashwanth/goNN/pkg/utils/matrix"
 )
 
 // A base layer interface. The Forward

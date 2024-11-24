@@ -1,8 +1,8 @@
 package optimizers
 
 import (
-	m "demo/pkg/utils/matrix"
 	"fmt"
+	m "github.com/RSYashwanth/goNN/pkg/utils/matrix"
 )
 
 // Simple SGD optimizer which takes in a learning LearningRate

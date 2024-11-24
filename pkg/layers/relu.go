@@ -1,9 +1,9 @@
 package layers
 
 import (
-	o "demo/pkg/optimizers"
-	m "demo/pkg/utils/matrix"
 	"fmt"
+	o "github.com/RSYashwanth/goNN/pkg/optimizers"
+	m "github.com/RSYashwanth/goNN/pkg/utils/matrix"
 )
 
 type ReluLayer struct {
