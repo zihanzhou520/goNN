@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 )
 
@@ -215,6 +216,29 @@ func MatrixEquals(m1Ptr, m2Ptr *Matrix) bool {
 		}
 	}
 	return true
+}
+
+// Returns L2 Distance between two matrices
+func L2DistanceSquared(m1Ptr, m2Ptr *Matrix) (float64, error) {
+	m1 := *m1Ptr
+	m2 := *m2Ptr
+
+	m := len(m1)
+	n := len(m1[0])
+
+	if m != len(m2) || n != len(m2[0]) {
+		return 0, fmt.Errorf("cannot calculate L2 distance between matrices of different shapes")
+	}
+	sum := 0.0
+	for i := 0; i < m; i++ {
+		if n != len(m1[i]) || n != len(m2[i]) {
+			return 0, fmt.Errorf("cannot calculate L2 distance between matrices of different shapes")
+		}
+		for j := 0; j < n; j++ {
+			sum += math.Pow(m1[i][j]-m2[i][j], 2)
+		}
+	}
+	return sum, nil
 }
 
 ///////////////////////////////

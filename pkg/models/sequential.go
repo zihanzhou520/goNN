@@ -6,6 +6,7 @@ import (
 	o "demo/pkg/optimizers"
 	m "demo/pkg/utils/matrix"
 	"fmt"
+	"os"
 )
 
 type Sequential struct {
@@ -26,6 +27,7 @@ func (s *Sequential) Forward(input *m.Matrix) (*m.Matrix, error) {
 	for _, layer := range s.Layers {
 		currentInput, err = layer.Forward(currentInput)
 		if err != nil {
+			fmt.Fprintf(os.Stderr, "Model.Forward: Error during forward")
 			return nil, err
 		}
 	}
@@ -42,19 +44,21 @@ func (s *Sequential) Train(input *m.Matrix, output *m.Matrix,
 		for _, layer := range s.Layers {
 			currentInput, err = layer.Forward(currentInput)
 			if err != nil {
+				fmt.Fprintf(os.Stderr, "Model.Train: Error during forward")
 				return err
 			}
 		}
 
-		fmt.Println("Loss: ", fmt.Sprintf("%.4f", (*loss).Calculate(currentInput, output)[0][0]))
 		// Now we will backpropagate
 		currentGrad, err := (*loss).Gradient(currentInput, output)
 		if err != nil {
+			fmt.Fprintf(os.Stderr, "Model.Train: Error during loss gradient calculation")
 			return err
 		}
 		for i := len(s.Layers) - 1; i >= 0; i-- {
 			currentGrad, err = s.Layers[i].Backward(currentGrad, optimizer)
 			if err != nil {
+				fmt.Fprintf(os.Stderr, "Model.Train: Error during backpropogation")
 				return err
 			}
 		}
