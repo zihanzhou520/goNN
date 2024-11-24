@@ -20,7 +20,7 @@ func main() {
 
 	fmt.Println("Network Structure:")
 	fmt.Println(" - 2 by 3 Dense Layer")
-	fmt.Println(" - ReLU Activation Layer")
+	fmt.Println(" - Tanh Layer")
 	fmt.Println(" - 3 by 1 Dense Layer\n")
 
 	fmt.Println("Expected Training Labels:")
@@ -44,7 +44,6 @@ func main() {
 		layers.NewDenseLayer(2, 3),
 		layers.NewTanhLayer(),
 		layers.NewDenseLayer(3, 1),
-		layers.NewTanhLayer(),
 	)
 
 	optim := o.NewSGD(0.03)
