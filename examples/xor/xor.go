@@ -52,7 +52,7 @@ func main() {
 
 	// Train the model
 	fmt.Println("\nTraining...")
-	err := model.Train(dataLoader, optim, loss, 1000)
+	err := model.Train(dataLoader, optim, loss, 10)
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Model.Train: Error during training%v\n", err)
@@ -65,7 +65,7 @@ func main() {
 	}
 
 	fmt.Println("\nInput:")
-	fmt.Println(m.NewGivenMatrix([][]float64{{0}, {1}}))
+	fmt.Println(m.NewGivenMatrix([][]float64{{1}, {1}}))
 	fmt.Println("\nOutput:")
 	fmt.Println(output)
 }

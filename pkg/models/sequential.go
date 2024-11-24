@@ -41,9 +41,12 @@ func (s *Sequential) Train(dataloader *d.DataLoader,
 
 	for i := 0; i < epochs; i++ {
 		currentBatch := dataloader.GetBatch()
-		for _, data := range currentBatch {
+		for j, data := range currentBatch {
 			currentInput := data.Input
 			currentTarget := data.Target
+			fmt.Printf("Epoch: %d, Batch: %d\n", i, j)
+			fmt.Println(currentInput)
+			fmt.Println(currentTarget)
 
 			// Keep forwarding the input
 			for _, layer := range s.Layers {
@@ -54,8 +57,17 @@ func (s *Sequential) Train(dataloader *d.DataLoader,
 				}
 			}
 
+			fmt.Println(currentInput)
+			// Now we will calculate the loss
+			lossValue, err := loss.Calculate(currentInput, currentTarget)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Model.Train: Error during loss calculation")
+				return err
+			}
+			fmt.Println("Loss: ", lossValue)
 			// Now we will backpropagate
 			currentGrad, err := loss.Gradient(currentInput, currentTarget)
+			fmt.Println(currentGrad)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Model.Train: Error during loss gradient calculation")
 				return err
