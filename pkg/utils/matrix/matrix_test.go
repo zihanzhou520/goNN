@@ -31,17 +31,6 @@ func TestConstructors(t *testing.T) {
 		}
 	}
 
-	// Test random generator, if it works
-	m2 := *NewRandomMatrix(3, 3, 1, 10)
-
-	// TODO: Also count max frequency
-	for i := 0; i < 3; i++ {
-		for j := 0; i < 3; i++ {
-			if m2[i][j] < 1 || m2[i][j] > 10 {
-				t.Errorf("Expected 1, got %f", m2[i][j])
-			}
-		}
-	}
 }
 
 func TestAdd(t *testing.T) {

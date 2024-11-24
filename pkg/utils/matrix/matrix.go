@@ -35,6 +35,18 @@ func NewInitMatrix(rows, cols int, val float64) *Matrix {
 }
 
 // A simple constructor which will create a matrix of random numbers
+func NewGivenMatrix(matrixFloat [][]float64) *Matrix {
+	matrix := make(Matrix, len(matrixFloat))
+	for i := 0; i < len(matrixFloat); i++ {
+		matrix[i] = make([]float64, len(matrixFloat[i]))
+		for j := 0; j < len(matrixFloat[i]); j++ {
+			matrix[i][j] = matrixFloat[i][j]
+		}
+	}
+	return &matrix
+}
+
+// A simple constructor which will create a matrix of random numbers
 func NewRandomMatrix(rows, cols int, minVal, maxVal float64) *Matrix {
 	matrix := *NewZeroMatrix(rows, cols)
 	for i := range matrix {
