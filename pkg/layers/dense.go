@@ -61,3 +61,7 @@ func (l *DenseLayer) Backward(grad *m.Matrix, optimizer *o.Optimizer) (*m.Matrix
 	}
 	return outputGrad, nil
 }
+
+func (l *DenseLayer) Type() string {
+	return "dense"
+}
