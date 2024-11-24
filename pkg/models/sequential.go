@@ -36,7 +36,7 @@ func (s *Sequential) Forward(input *m.Matrix) (*m.Matrix, error) {
 }
 
 func (s *Sequential) Train(dataloader *d.DataLoader,
-	optimizer *o.Optimizer, loss *e.Loss, epochs int) error {
+	optimizer o.Optimizer, loss e.Loss, epochs int) error {
 	var err error
 
 	for i := 0; i < epochs; i++ {
@@ -55,13 +55,13 @@ func (s *Sequential) Train(dataloader *d.DataLoader,
 			}
 
 			// Now we will backpropagate
-			currentGrad, err := (*loss).Gradient(currentInput, currentTarget)
+			currentGrad, err := loss.Gradient(currentInput, currentTarget)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Model.Train: Error during loss gradient calculation")
 				return err
 			}
 			for i := len(s.Layers) - 1; i >= 0; i-- {
-				currentGrad, err = s.Layers[i].Backward(currentGrad, optimizer)
+				currentGrad, err = s.Layers[i].Backward(currentGrad, &optimizer)
 				if err != nil {
 					fmt.Fprintf(os.Stderr, "Model.Train: Error during backpropogation")
 					return err

@@ -5,6 +5,6 @@ import (
 )
 
 type Loss interface {
-	Calculate(input, target *m.Matrix) (float64, error)
-	Gradient(input, target *m.Matrix) (*m.Matrix, error)
+	Calculate(output, target *m.Matrix) (float64, error)
+	Gradient(output, target *m.Matrix) (*m.Matrix, error)
 }

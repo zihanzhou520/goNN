@@ -11,6 +11,13 @@ type SGD struct {
 	LearningRate float64
 }
 
+// Creates a new SGD optimizer
+func NewSGD(learningRate float64) *SGD {
+	return &SGD{
+		LearningRate: learningRate,
+	}
+}
+
 // Performs an inplace updation for
 // the passed in parameters based on the calculated gradient
 func (s *SGD) Step(params *m.Matrix, grad *m.Matrix) error {
